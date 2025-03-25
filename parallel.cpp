@@ -25,6 +25,11 @@ int main (int argc, char** argv) {
 	//but when testing 1,000,000 segmentation fault occured
 	int* testArray = new int[ARR_SIZE];
 	const int elements_per_proc = (ARR_SIZE/world_size);
+	if(ARR_SIZE % world_size != 0){
+		if(world_rank == 0)
+			std::cout << "Number of cores not divisible by Array size" << std::endl;
+		return 0;
+	}
 	int* recv_buffer = new int[elements_per_proc];
 	
 	//Root processor assigns random number to arrays
@@ -51,13 +56,20 @@ int main (int argc, char** argv) {
 		for( int i = 1; i < world_size; i++){
 			merge(testArray, 0, i * elements_per_proc-1, (i + 1) * elements_per_proc -1);
 		}
+	}
 
-		//End timer
-		auto stop = std::chrono::high_resolution_clock::now();
+	//End timer
+	auto stop = std::chrono::high_resolution_clock::now();
 		
-		//Calculate time taken
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	//Calculate time taken
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	if(world_rank == 0){
 		std::cout << "Time taken by function: " << duration.count() << " microseconds" << std::endl;
+		//This is for checking that the array is in order.
+		//
+		//for(int i = 0; i< ARR_SIZE; i++){
+		//	std::cout << testArray[i] << "|";
+		//}
 	}
 	
 	//De-allocate memory
