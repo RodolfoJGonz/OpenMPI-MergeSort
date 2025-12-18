@@ -1,3 +1,6 @@
+# Disclaimer
+Since writing this script, I recognize that this is not the correct way to do parallelization of this kind of task. This just served as my entryway to Open-MPI and parallel computing.
+
 # OpenMPI-MergeSort
 Using OpenMPI for C++ to sort array chunks in parallel.
 
